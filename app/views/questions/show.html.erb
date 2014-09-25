@@ -1,0 +1,68 @@
+<!-- TODO: REFACTOR THE LOGICS OUT OF THE VIEW! -->
+
+ <div class="entry_button">
+  <ul>
+    <li><a href="/" class="logo-link"><h1>Stock<span>Overflow</span> <i class="fa fa-line-chart"></i></h1></a></li>
+    <li class="user_name"><%=link_to User.find(session[:user_id]).username, user_path(session[:user_id])%></li>
+    <li><%= link_to "Sign Out", sessions_path, :method => :delete, class: "signout" %></li>
+  </ul>
+</div>
+
+<div class="container">
+  <div class="question-container">
+    <div class="question-title">
+      <%= @question.title %>
+    </div>
+    <div class="question-content">
+      <div class="votecount">
+        <a class="upvote" href="/users/<%=@user.id%>/questions/<%=@question.id%>/votes/new"><i class="fa fa-chevron-circle-up"></i></a></br>
+        <p class="question-vote-count"><%= Vote.where(vote_context_id: @question.id, vote_context_type: "Question").count %></p>
+        <a class="downvote" href="/users/<%=@user.id%>/questions/<%=@question.id%>/votes/destroy"><i class="fa fa-chevron-circle-down"></i></a></br>
+      <!-- vote count -->
+      </div>
+      <%= @question.content %>
+    </div>
+    <p>asked by: <%= @user.username %></p>
+
+    <!-- comments -->
+    <a class="show-question-comments">Comments</a>
+    <div class="question-comments-container">
+      <%= render 'question_comments' %>
+    </div>
+  </div>
+    <br>
+
+  <div class="answers-container">
+    <div class="answer-count">
+      <%= @question.answers.count %> Answers
+    </div>
+
+    <% @question.answers.each_with_index do |answer, index| %>
+      <% user = User.find(answer.user_id) %>
+      <% votes = Vote.where(vote_context_id: answer.id, vote_context_type: "Answer") %>
+      <div class="answer-container">
+        <div class="votecount">
+          <a class="upvote" href="/users/<%=@user.id%>/questions/<%=@question.id%>/answers/<%=answer.id%>/votes/new"><i class="fa fa-chevron-circle-up"></i></a></br>
+          <p class="answer-vote-count"><%= votes.count %></p>
+          <a class="downvote" href="/users/<%=@user.id%>/questions/<%=@question.id%>/answers/<%=answer.id%>/votes/destroy"><i class="fa fa-chevron-circle-down"></i></a></br>
+        </div>
+        <p><%= answer.content %></p>
+        <p>answered by: <%= user.username %></p>
+        <!-- comments -->
+        <a class="show-answer-comments">Comments</a>
+        <div class="answer-comments-container">
+          <!-- <p><%= @question.responses.each  %></p> -->
+          <% @current_answer = answer %>
+          <%= render 'answer_comments' %>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+  </br>
+    <div class="show-answer-form">
+      <%= render 'new_answer' %>
+    </div>
+
+
+</div>

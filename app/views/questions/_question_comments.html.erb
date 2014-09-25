@@ -1,0 +1,12 @@
+<!-- TODO: REFACTOR THE LOGICS OUT OF THE VIEW! -->
+<% @question.responses.each do |response| %>
+    <p><%= response.content %> | <em><%= User.find(response.user_id).username %></em></p>
+<% end %>
+
+<% if session[:user_id] %>
+  <p class="create-question-comment">create comment</p>
+  <form class="question-comment-form" action="/users/<%=@user.id%>/questions/<%=@question.id%>/responses" method="post">
+    <input class="input-content" type="text" name="content" placeholder="comment here">
+    <input class="question-comment-submit" type="submit">
+  </form>
+<% end %>
